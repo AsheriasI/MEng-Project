@@ -1,66 +1,82 @@
-# Orthogonal Additive Gaussian Processes
+# OAK — Orthogonal Additive Kernels (cleaned)
+
+I built this cleaned copy of an Orthogonal Additive Kernel (OAK) codebase as the starting point for my MEng investigations into mutual information across kernel components and how OAK compares to standard additive Gaussian processes (AGPs) on toy and UCI-style datasets.
+
+This repository contains the implementation I used to:
+
+- explore per-component contributions (Sobol indices) and convert those to mutual-information style summaries;
+- compare OAK against baseline additive and RBF models across toy datasets, measuring predictive performance and component attribution;
+- study loss landscapes for OAK and AGP training (details and extended figures are presented in my MEng thesis).
+
+The codebase includes:
+
+- the OAK kernel and constrained kernels for binary / categorical / continuous inputs
+- input measures and optional normalising flows for transforming inputs
+- a compact model API for training, predicting and extracting per-component contributions
+- example scripts and notebooks used in my experiments
+
+## Repository layout (cleaned)
+
+Top-level (inside this CLEANED/ folder):
+
+- `README.md` — this file (research-focused, first-person)
+- `setup.py`, `requirements.txt` — packaging / dependency manifests
+- `LICENSE`, `NOTICE`, `CODE_OF_CONDUCT.md`, `CONTRIBUTING.md`
+- `src/` — package source
+  - `src/oak/` — core OAK implementation and utilities (kernels, model_utils, plotting, utils, normalising flow)
+  - `src/mutual_information/oak_mi.py` — mutual-information helpers I used in notebooks
+- `examples/uci/` — example scripts I used for UCI regression & classification experiments
+- `notebooks/` — curated notebooks (mutual-information notebook, UCI example, contraction-rate experiments)
+- `results/` — saved outputs and models from example runs
+- `tests/` — unit tests copied from the original project
+
+This layout groups code, notebooks and results so experiments are easy to reproduce.
+
+## How I run the code (quick)
+
+I recommend creating a dedicated environment (Python 3.8+). From the repository root I do:
+
+```powershell
+# create and activate a virtual environment (Windows PowerShell)
+python -m venv .venv; .\.venv\Scripts\Activate.ps1
+
+# install dependencies
+python -m pip install -r CLEANED/requirements.txt
+
+# optional: install package in editable mode
+python -m pip install -e CLEANED
+```
+
+If you only want to run quick CPU-only experiments, install a CPU build of TensorFlow to avoid GPU driver issues.
+
+## Reproduce a quick mutual-information run
+
+I keep a working notebook at `CLEANED/notebooks/oak_mi.ipynb` that shows how I:
+
+1. train an OAK model on a toy dataset;
+2. extract per-component predictions and compute Sobol indices;
+3. convert component variances to mutual-information estimates (shown in bits);
+4. produce per-component plots and tables that I used in write-ups.
+
+To run the UCI regression example I used:
+
+```powershell
+python CLEANED/examples/uci/uci_regression_train.py --dataset_name=autoMPG
+python CLEANED/examples/uci/uci_plotting.py --dataset_name=autoMPG
+```
+
+The `notebooks/` folder includes an executable notebook version of the autoMPG example and the mutual-information analysis I ran during the project.
+
+## What I analysed and where to find more detail
+
+- Mutual-information experiments: notebooks and the `src/mutual_information/oak_mi.py` code walk through how I mapped normalized Sobol indices to a per-component information quantity using the Gaussian variance formula. That is the starting point I used to compare how much information each additive term carries.
+
+- OAK vs AGP comparisons: examples under `CLEANED/examples/uci/` and the toy notebooks compare predictive performance, decomposition quality, and component stability across seeds.
+
+- Loss landscapes and training behaviour: richer visualisations and analysis of loss landscapes for OAK and AGP (used to diagnose training stability and local minima) are summarised in my MEng thesis; see the thesis for extended figures, captions and discussion.
 
 
-This is the code repo for the paper Additive Gaussian Processes Revisited (https://arxiv.org/pdf/2206.09861.pdf)
 
+## Results, 
 
-## Getting Started
-### Installation
-Clone the repository (https://github.com/amzn/orthogonal-additive-gaussian-processes) and install the package with `pip install -e .`. The package is tested with Python 3.7.
-The main dependency is `gpflow` and we relied on `gpflow == 2.2.1`, where in particular implements the posteriors module.
-
-### Tests
-Run `pytest` to run the tests in the `tests` folder.
-
-### Key Components
-
-- Kernels:
-	- `ortho_binary_kernel.py` implements the constrained binary kernel 
-
-	- `ortho_categorical_kernel.py` implements the constrained coregional kernel for categorical variables
-
-	- `ortho_rbf_kernel.py` implements the constrained squared exponential (SE) kernel for continuous variables
-	
-	- `oak_kernel.py` multiples and adds kernels over feature dimensions using Newton Girard method
-
-- Measures:
-	- `input_measures.py` implements Uniform measure, (mixture of) Gaussian measure, empirical measure for input distributions
-
-
-- Normalising Flow:
-	- `normalising_flow.py` implements normalising flows to transform input densities into Gaussian random variables 
-
-
-- Model API:
-	- `model_utils.py` is the model API for model inference, prediction and plotting, and Sobol calculations
-
-- Utilities:
-	- `utils.py` contains utility functions 
-	- `plotting_utils.py` contains utility functions for plotting
-
-<!-- #region -->
-## Usage
-
-**Data**
-
-UCI benchmark data are saved in the `./data` directory. They are obtained from https://github.com/duvenaud/additive-gps/blob/master/data/. Run `./data/download_data.py` to download all the datasets. 
-
-**Examples**
-
-Example tutorials and scripts are in the `./example` directory.
-
-*UCI:*
-
-* Contains training scripts for UCI regression and classification
-benchmark datasets. See `./examples/uci/README_UCI.md` for details. 
-
-
-## Security
-
-See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more information.
-
-## License
-
-This project is licensed under the Apache-2.0 License.
-
-<!-- #endregion -->
+I store run outputs and saved models in `CLEANED/results/`. 

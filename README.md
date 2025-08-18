@@ -19,22 +19,20 @@ The codebase includes:
 
 Top-level (inside this CLEANED/ folder):
 
-- `README.md` — this file (research-focused, first-person)
+- `README.md` — this file (research-focused)
 - `setup.py`, `requirements.txt` — packaging / dependency manifests
 - `LICENSE`, `NOTICE`, `CODE_OF_CONDUCT.md`, `CONTRIBUTING.md`
 - `src/` — package source
   - `src/oak/` — core OAK implementation and utilities (kernels, model_utils, plotting, utils, normalising flow)
-  - `src/mutual_information/oak_mi.py` — mutual-information helpers I used in notebooks
-- `examples/uci/` — example scripts I used for UCI regression & classification experiments
+  - `src/mutual_information/oak_mi.py` — mutual-information helpers used in notebooks
+- `examples/uci/` — example scripts used for UCI regression & classification experiments
 - `notebooks/` — curated notebooks (mutual-information notebook, UCI example, contraction-rate experiments)
 - `results/` — saved outputs and models from example runs
 - `tests/` — unit tests copied from the original project
 
-This layout groups code, notebooks and results so experiments are easy to reproduce.
+## run the code
 
-## How I run the code (quick)
-
-I recommend creating a dedicated environment (Python 3.8+). From the repository root I do:
+I recommend creating a dedicated environment (Python 3.8+). From the repository root:
 
 ```powershell
 # create and activate a virtual environment (Windows PowerShell)
@@ -47,18 +45,17 @@ python -m pip install -r CLEANED/requirements.txt
 python -m pip install -e CLEANED
 ```
 
-If you only want to run quick CPU-only experiments, install a CPU build of TensorFlow to avoid GPU driver issues.
 
 ## Reproduce a quick mutual-information run
 
-I keep a working notebook at `CLEANED/notebooks/oak_mi.ipynb` that shows how I:
+I keep a working notebook at `CLEANED/notebooks/oak_mi.ipynb` that shows how to:
 
 1. train an OAK model on a toy dataset;
 2. extract per-component predictions and compute Sobol indices;
 3. convert component variances to mutual-information estimates (shown in bits);
 4. produce per-component plots and tables that I used in write-ups.
 
-To run the UCI regression example I used:
+To run the UCI regression example:
 
 ```powershell
 python CLEANED/examples/uci/uci_regression_train.py --dataset_name=autoMPG
@@ -67,7 +64,7 @@ python CLEANED/examples/uci/uci_plotting.py --dataset_name=autoMPG
 
 The `notebooks/` folder includes an executable notebook version of the autoMPG example and the mutual-information analysis I ran during the project.
 
-## What I analysed and where to find more detail
+## What was analysed and where to find more detail
 
 - Mutual-information experiments: notebooks and the `src/mutual_information/oak_mi.py` code walk through how I mapped normalized Sobol indices to a per-component information quantity using the Gaussian variance formula. That is the starting point I used to compare how much information each additive term carries.
 
@@ -75,8 +72,3 @@ The `notebooks/` folder includes an executable notebook version of the autoMPG e
 
 - Loss landscapes and training behaviour: richer visualisations and analysis of loss landscapes for OAK and AGP (used to diagnose training stability and local minima) are summarised in my MEng thesis; see the thesis for extended figures, captions and discussion.
 
-
-
-## Results, 
-
-I store run outputs and saved models in `CLEANED/results/`. 
